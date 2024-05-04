@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 const getAllUsers = async (req, res, next) =>{
     try {
         const users = await User.find().select('-password').lean()
-        if(!users){
+        if(!users?.length){
             return res.status(400).json( {message: 'no users found'})
         }
         res.json(users)
@@ -24,6 +24,7 @@ const getAllUsers = async (req, res, next) =>{
 const createUser = async (req, res, next) =>{
     try {
         const { username, password, roles } = req.body
+
         if(!username || !password || !Array.isArray(roles) || !roles.length){
             return res.status(400).json({message: 'All fields required'})
         }
@@ -51,7 +52,7 @@ const createUser = async (req, res, next) =>{
 }
 
 // @desc update a user
-// @route Put /users
+// @route Patch /users
 // @access Private
 const updateUser = async (req, res, next) =>{
     try {
